@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/cop3003final.dir/main.cpp.o CMakeFiles/cop3003final.dir/ShiftData.cpp.o CMakeFiles/cop3003final.dir/Tracker.cpp.o -o cop3003final 

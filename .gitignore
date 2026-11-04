@@ -1,1 +1,2 @@
-./finalproject
+build/
+cmake-build-*/

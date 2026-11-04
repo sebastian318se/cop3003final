@@ -1,3 +1,0 @@
-/home/byteseize/vscodium/cpp/finalproject/build/CMakeFiles/cop3003final.dir
-/home/byteseize/vscodium/cpp/finalproject/build/CMakeFiles/edit_cache.dir
-/home/byteseize/vscodium/cpp/finalproject/build/CMakeFiles/rebuild_cache.dir
