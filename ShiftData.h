@@ -1,9 +1,13 @@
+
 #ifndef COP3003FINAL_SHIFTDATA_H
 #define COP3003FINAL_SHIFTDATA_H
 
+#include <memory>
+#include <string>
+
 class ShiftData
 {
-private:
+protected:
     double hours;
     double hourlyWage;
     double tips;
@@ -13,8 +17,15 @@ public:
     ShiftData(double hours, double hourlyWage,
               double tips, double tipOut);
 
-    double calculateEarnings() const;
-    double calculateHourly() const;
+    virtual ~ShiftData();
+
+    virtual double calculateEarnings() const;
+
+    virtual double calculateHourly() const;
+
+    virtual std::string getShiftType() const;
+
+    virtual std::unique_ptr<ShiftData> clone() const;
 };
 
 #endif

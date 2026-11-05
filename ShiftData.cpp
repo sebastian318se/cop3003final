@@ -1,6 +1,6 @@
+
 #include "ShiftData.h"
 
-// Constructor
 ShiftData::ShiftData(double shiftHours, double shiftWage,
                      double shiftTips, double shiftTipOut)
 {
@@ -10,13 +10,17 @@ ShiftData::ShiftData(double shiftHours, double shiftWage,
     tipOut = shiftTipOut;
 }
 
-// Calculates total earnings for the shift
+ShiftData::~ShiftData()
+{
+}
+
+// Regular shift earnings
 double ShiftData::calculateEarnings() const
 {
     return (hours * hourlyWage) + tips - tipOut;
 }
 
-// Calculates average hourly earnings
+// Average hourly earnings
 double ShiftData::calculateHourly() const
 {
     if (hours == 0)
@@ -25,4 +29,15 @@ double ShiftData::calculateHourly() const
     }
 
     return calculateEarnings() / hours;
+}
+
+std::string ShiftData::getShiftType() const
+{
+    return "Regular Shift";
+}
+
+// Allows Tracker to safely copy derived objects
+std::unique_ptr<ShiftData> ShiftData::clone() const
+{
+    return std::unique_ptr<ShiftData>(new ShiftData(*this));
 }
