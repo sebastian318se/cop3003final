@@ -1,9 +1,14 @@
 
 #include "ShiftData.h"
+#include <stdexcept>
 
 ShiftData::ShiftData(double shiftHours, double shiftWage,
                      double shiftTips, double shiftTipOut)
 {
+    if (shiftHours < 0) {
+        throw std::invalid_argument("Shift hours cannot be negative");
+    }
+
     hours = shiftHours;
     hourlyWage = shiftWage;
     tips = shiftTips;
