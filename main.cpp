@@ -28,7 +28,7 @@ int main()
 
     //test negative shift hours are denied
     try {
-        ShiftData.testValidation(-200,30,20,10);
+        ShiftData testValidation(-200,30,20,10);
     }
     catch (const std::invalid_argument&error) {
         std::cout << error.what() << '\n';
