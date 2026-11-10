@@ -15,4 +15,8 @@ add_executable(cop3003final
         Tracker.h
         OvertimeShift.cpp
         OvertimeShift.h
+        TipOut.cpp
+        TipOut.h
+        PercentTipOut.cpp
+        PercentTipOut.h
 )
