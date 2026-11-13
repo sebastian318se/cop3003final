@@ -1,15 +1,19 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <QApplication>
 
 #include "ShiftData.h"
 #include "Tracker.h"
-#include "TipOut.h"
-#include "PercentTipOut.h"
-#include "FixedTipOut.h"
+#include "MainWindow.h"
 
-int main()
+int main(int argc, char *argv[])
 {
+
+    //creates Qt app
+    QApplication app(argc, argv);
+
+    //main tracker
     Tracker tracker;
 
     try {
@@ -20,5 +24,10 @@ int main()
         std:: cout << "Loading error: " << error.what() << "\n";
     }
 
-    return 0;
+    MainWindow window(tracker);
+
+    window.show();
+
+
+    return app.exec();
 }

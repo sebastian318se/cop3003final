@@ -11,7 +11,7 @@ ShiftData::ShiftData(double shiftHours, double shiftWage,
         throw std::invalid_argument("Shift hours cannot be negative");
     }
 
-    if (negative(shiftHours)) {
+    if (negative(shiftSales)) {
         throw std::invalid_argument("Sales cannot be negative");
     }
 

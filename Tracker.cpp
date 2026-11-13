@@ -110,7 +110,7 @@ void Tracker::saveInFile(const std::string &fileName) const
         << shift.getTips() << ","
         << shift.getSales() << ","
         << shift.getTipOutType() << ","
-        << shift.getTipOutValue() << "," << std:: endl;
+        << shift.getTipOutValue() << std:: endl;
     }
 }
 
@@ -177,4 +177,12 @@ void Tracker::loadFromFile(const std::string &fileName)
         addShift(loadedShift);
     }
 
+}
+
+void Tracker::addShift(double hours, double hourlyWage, double tips,
+    double sales, std::shared_ptr<TipOut> tipOutType)
+{
+    ShiftData newShift(hours, hourlyWage, tips, sales, tipOutType);
+
+    addShift(newShift);
 }
