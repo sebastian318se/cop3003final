@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 #include "ShiftData.h"
 #include "TipOut.h"
 
@@ -22,7 +23,11 @@ public:
     void addShift(double hours, double hourlyWage,
         double tips, double sales, std::shared_ptr<TipOut> tipOutMethod);
 
+    //saves shifts stored in the tracker
+    void saveInFile(const std::string& fileName) const;
 
+    //load shifts from a file
+    void loadFromFile(const std::string& fileName);
 
     void editShift(int index, const ShiftData& shift);
 

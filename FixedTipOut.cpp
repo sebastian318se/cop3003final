@@ -21,3 +21,13 @@ double FixedTipOut::calculateTipOut(double sales) const
 {
     return amount;
 }
+
+std::string FixedTipOut::getType() const
+{
+    return "Fixed";
+}
+
+double FixedTipOut::getValue() const
+{
+    return amount;
+}

@@ -46,6 +46,39 @@ double ShiftData::calculateHourly() const
     return calculateEarnings() / hours;
 }
 
+//access private attributes through getters
+double ShiftData::getHours() const
+{
+    return hours;
+}
+
+double ShiftData::getHourlyWage() const
+{
+    return hourlyWage;
+}
+
+double ShiftData::getTips() const
+{
+    return tips;
+}
+
+double ShiftData::getSales()const
+{
+    return sales;
+}
+
+//Asks TipOut object what the type is
+std::string ShiftData::getTipOutType() const
+{
+    return tipOutMethod->getType();
+}
+
+//Asks TipOut object for what number it stores
+double ShiftData::getTipOutValue() const
+{
+    return tipOutMethod->getValue();
+}
+
 std::string ShiftData::getShiftType() const
 {
     return "Regular Shift";

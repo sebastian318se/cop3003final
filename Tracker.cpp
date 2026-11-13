@@ -3,6 +3,10 @@
 #include <iostream>
 #include <stdexcept>
 #include "Utilities.h"
+#include <fstream>
+#include <sstream>
+#include "PercentTipOut.h"
+#include "FixedTipOut.h"
 
 // Adds a copy of a shift to the tracker
 void Tracker::addShift(const ShiftData& shift)
@@ -83,4 +87,94 @@ void Tracker::displayShifts() const
         std::cout << "Hourly Average: $"
                   << shift.calculateHourly() << std::endl;
     }
+}
+
+// Saves all the shifts in tracker
+void Tracker::saveInFile(const std::string &fileName) const
+{
+    std::ofstream file(fileName);
+
+    if (!file) {
+        throw std::runtime_error("Failed to open file.");
+    }
+
+    //loop to go through every stored shift
+    for (int i = 0; i < getShiftCount(); i++) {
+
+        //grab current shift
+        const ShiftData& shift = getShift(i);
+
+        //save all the information
+        file << shift.getHours() << ","
+        << shift.getHourlyWage() << ","
+        << shift.getTips() << ","
+        << shift.getSales() << ","
+        << shift.getTipOutType() << ","
+        << shift.getTipOutValue() << "," << std:: endl;
+    }
+}
+
+//load saved shifts
+void Tracker::loadFromFile(const std::string &fileName)
+{
+    std::ifstream loadFile(fileName);
+
+    if (!loadFile) {
+        throw std::runtime_error("Could not load file");
+    }
+
+    //temporarily hold one line from the file
+    std::string line;
+
+    //read one full line until none left
+    while (std::getline(loadFile, line)) {
+        std::stringstream lineStream(line);
+
+        //temporarily hold values to read
+        std::string hoursText;
+        std::string wageText;
+        std::string tipsText;
+        std::string salesText;
+        std::string tipType;
+        std::string tipValueText;
+
+        std::getline(lineStream, hoursText, ',');
+        std::getline(lineStream, wageText, ',');
+        std::getline(lineStream, tipsText, ',');
+        std::getline(lineStream, salesText, ',');
+        std::getline(lineStream, tipType, ',');
+        std::getline(lineStream, tipValueText, ',');
+
+        //stod means string to double
+        //convert text values into numbers
+        double hours = std::stod(hoursText);
+        double wage = std::stod(wageText);
+        double tips = std::stod(tipsText);
+        double sales = std::stod(salesText);
+        double tipValue = std::stod(tipValueText);
+
+        //holds whatever tip out type used
+        std::shared_ptr<TipOut> tipOutType;
+
+        //builds a PercentTipOut object
+        if (tipType == "Percent") {
+            tipOutType =
+                std::make_shared<PercentTipOut>(tipValue);
+        }
+        //builds a FixedTipOut object
+        else if (tipType == "Fixed") {
+            tipOutType =
+                std::make_shared<FixedTipOut>(tipValue);
+        }
+
+        //validation rejects anything else
+        else {
+            throw std::runtime_error("Not valid tip out type");
+        }
+
+        ShiftData loadedShift(hours, wage, tips, sales, tipOutType);
+
+        addShift(loadedShift);
+    }
+
 }

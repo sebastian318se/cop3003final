@@ -22,6 +22,14 @@ public:
               double tips, double sales,
               std::shared_ptr<TipOut> tipOutMethod);
 
+    //getters
+    double getHours() const;
+    double getHourlyWage() const;
+    double getTips() const;
+    double getSales() const;
+    std::string getTipOutType() const;
+    double getTipOutValue() const;
+
     virtual ~ShiftData();
 
     virtual double calculateEarnings() const;

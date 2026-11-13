@@ -18,3 +18,13 @@ double PercentTipOut::calculateTipOut(double sales) const
     return sales * (rate / 100.0);
 
 }
+
+std::string PercentTipOut::getType() const
+{
+    return "Percent";
+}
+
+double PercentTipOut::getValue() const
+{
+    return rate;
+}

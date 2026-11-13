@@ -12,5 +12,9 @@ public:
     PercentTipOut(double tipRate);
 
     double calculateTipOut(double sales) const override;
+
+    std::string getType() const override;
+
+    double getValue() const override;
 };
 #endif //COP3003FINAL_PERCENTAGECALCULATOR_H

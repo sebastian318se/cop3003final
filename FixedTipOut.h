@@ -15,6 +15,10 @@ public:
     FixedTipOut(double fixedAmount);
 
     double calculateTipOut(double sales) const override;
+
+    std::string getType() const override;
+
+    double getValue() const override;
 };
 
 
