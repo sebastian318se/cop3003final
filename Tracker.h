@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include "ShiftData.h"
+#include "TipOut.h"
 
 class Tracker
 {
@@ -13,7 +14,15 @@ private:
     std::vector<std::unique_ptr<ShiftData>> shifts;
 
 public:
+    // adds Shiftdata object to tracker thats already been created
     void addShift(const ShiftData& shift);
+
+    //overload of addShift
+    // user can provide shift information
+    void addShift(double hours, double hourlyWage,
+        double tips, double sales, std::shared_ptr<TipOut> tipOutMethod);
+
+
 
     void editShift(int index, const ShiftData& shift);
 
