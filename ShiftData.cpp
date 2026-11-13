@@ -3,26 +3,35 @@
 #include <stdexcept>
 
 ShiftData::ShiftData(double shiftHours, double shiftWage,
-                     double shiftTips, double shiftTipOut)
+                     double shiftTips, double shiftSales,
+                     std::shared_ptr<TipOut> shiftTipOutMethod)
 {
     if (shiftHours < 0) {
         throw std::invalid_argument("Shift hours cannot be negative");
     }
 
+    if (shiftSales < 0) {
+        throw std::invalid_argument("Sales cannot be negative");
+    }
+
     hours = shiftHours;
     hourlyWage = shiftWage;
     tips = shiftTips;
-    tipOut = shiftTipOut;
+    sales = shiftSales;
+    tipOutMethod = shiftTipOutMethod;
 }
 
 ShiftData::~ShiftData()
 {
 }
 
-// Regular shift earnings
+//total earnings for a shift
 double ShiftData::calculateEarnings() const
 {
-    return (hours * hourlyWage) + tips - tipOut;
+   // use the tip-out method for this shift and calculate the amount
+    double calculatedTipOut = tipOutMethod -> calculateTipOut(sales);
+
+    return (hours * hourlyWage) + tips - calculatedTipOut;
 }
 
 // Average hourly earnings

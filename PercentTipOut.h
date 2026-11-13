@@ -1,8 +1,7 @@
-#include "TipOut.h"
-
 #ifndef COP3003FINAL_PercentTipOut_H
 #define COP3003FINAL_PercentTipOut_H
 
+#include "TipOut.h"
 
 class PercentTipOut : public TipOut
 {

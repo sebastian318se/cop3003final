@@ -8,6 +8,7 @@
 
 class Tracker
 {
+    //creates a list that owns all the shifts
 private:
     std::vector<std::unique_ptr<ShiftData>> shifts;
 

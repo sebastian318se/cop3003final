@@ -3,8 +3,10 @@
 #include <stdexcept>
 
 #include "ShiftData.h"
-#include "OvertimeShift.h"
 #include "Tracker.h"
+#include "TipOut.h"
+#include "PercentTipOut.h"
+#include "FixedTipOut.h"
 
 int main()
 {
@@ -14,21 +16,22 @@ int main()
     std::cout << "       SHIFT TRACKER SYSTEM\n";
     std::cout << "=================================\n";
 
-    // Create regular shifts
-    ShiftData shiftOne(5, 20, 100, 10);
-    ShiftData shiftTwo(6, 18, 80, 15);
+    // Create separate tip out objects
+    // store smart pointers to them
+    auto percentTipMethod = std::make_shared<PercentTipOut>(4);
+    auto fixedTipMethod = std::make_shared<FixedTipOut>(25);
 
-    // Create an overtime shift
-    OvertimeShift shiftThree(10, 20, 150, 20);
+    // Create regular shifts
+    ShiftData shiftOne(5, 20, 100, 10, percentTipMethod);
+    ShiftData shiftTwo(6, 18, 80, 15, fixedTipMethod);
 
     // Add shifts to tracker
     tracker.addShift(shiftOne);
     tracker.addShift(shiftTwo);
-    tracker.addShift(shiftThree);
 
     //test negative shift hours are denied
     try {
-        ShiftData testValidation(-200,30,20,10);
+        ShiftData testValidation(-200,30,20,500, percentTipMethod);
     }
     catch (const std::invalid_argument&error) {
         std::cout << error.what() << '\n';
@@ -44,16 +47,10 @@ int main()
     std::cout << "\n===== RUNTIME POLYMORPHISM =====\n";
 
     const ShiftData& regularReference = tracker.getShift(0);
-    const ShiftData& overtimeReference = tracker.getShift(2);
 
     std::cout << regularReference.getShiftType()
               << " Earnings: $"
               << regularReference.calculateEarnings()
-              << std::endl;
-
-    std::cout << overtimeReference.getShiftType()
-              << " Earnings: $"
-              << overtimeReference.calculateEarnings()
               << std::endl;
 
     // Display all shifts
@@ -69,7 +66,7 @@ int main()
     // Edit a shift
     std::cout << "\n===== EDITING A SHIFT =====\n";
 
-    ShiftData updatedShift(7, 22, 120, 15);
+    ShiftData updatedShift(7, 22, 120, 1200, percentTipMethod);
 
     try
     {
@@ -120,7 +117,7 @@ int main()
     // Continue using tracker after exception
     std::cout << "\n===== CONTINUED USE =====\n";
 
-    ShiftData newShift(4, 25, 60, 5);
+    ShiftData newShift(4, 25, 60,600, fixedTipMethod);
 
     tracker.addShift(newShift);
 
@@ -143,6 +140,15 @@ int main()
               << tracker.getTotalEarnings() << std::endl;
 
     std::cout << "\nShift Tracker completed successfully!\n";
+
+    PercentTipOut percentTip(4);
+    FixedTipOut fixedTip(25);
+
+    TipOut& firstTipOut = percentTip;
+    TipOut& secondTipOut = fixedTip;
+
+    std:: cout << firstTipOut.calculateTipOut(2000) << std:: endl;
+    std:: cout << secondTipOut.calculateTipOut(2000) << std:: endl;
 
     return 0;
 }
