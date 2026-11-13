@@ -12,7 +12,7 @@ PercentTipOut::PercentTipOut(double tipRate)
 
 double PercentTipOut::calculateTipOut(double sales) const
 {
-    if (sales < 0) {
+    if (negative(sales)) {
         throw std::invalid_argument("Sales cannot be negative");
     }
     return sales * (rate / 100.0);

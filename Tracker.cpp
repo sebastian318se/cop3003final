@@ -2,6 +2,7 @@
 #include "Tracker.h"
 #include <iostream>
 #include <stdexcept>
+#include "Utilities.h"
 
 // Adds a copy of a shift to the tracker
 void Tracker::addShift(const ShiftData& shift)
@@ -37,7 +38,7 @@ void Tracker::deleteShift(int index)
 // Returns a shift using a base-class reference
 const ShiftData& Tracker::getShift(int index) const
 {
-    if (index < 0 || index >= static_cast<int>(shifts.size()))
+    if (negative(index) || index >= static_cast<int>(shifts.size()))
     {
         throw std::out_of_range("Invalid shift index.");
     }

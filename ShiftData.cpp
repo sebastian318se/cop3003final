@@ -1,16 +1,17 @@
 
 #include "ShiftData.h"
 #include <stdexcept>
+#include "Utilities.h"
 
 ShiftData::ShiftData(double shiftHours, double shiftWage,
                      double shiftTips, double shiftSales,
                      std::shared_ptr<TipOut> shiftTipOutMethod)
 {
-    if (shiftHours < 0) {
+    if (negative(shiftHours)) {
         throw std::invalid_argument("Shift hours cannot be negative");
     }
 
-    if (shiftSales < 0) {
+    if (negative(shiftHours)) {
         throw std::invalid_argument("Sales cannot be negative");
     }
 

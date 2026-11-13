@@ -4,11 +4,12 @@
 
 #include "FixedTipOut.h"
 #include <stdexcept>
+#include "Utilities.h"
 
 //constructor
 FixedTipOut::FixedTipOut(double fixedAmount)
 {
-    if (fixedAmount < 0) {
+    if (negative(fixedAmount)) {
         throw std:: invalid_argument("Tip amount cannot be negative");
     }
 

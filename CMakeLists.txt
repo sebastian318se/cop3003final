@@ -19,4 +19,5 @@ add_executable(cop3003final
         PercentTipOut.h
         FixedTipOut.cpp
         FixedTipOut.h
+        Utilities.h
 )
