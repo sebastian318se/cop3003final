@@ -10,6 +10,7 @@
 #include "FixedTipOut.h"
 
 #include <exception>
+#include <cmath>
 
 //builds main TipTally window
 MainWindow::MainWindow(Tracker& tracker, QWidget *parent)
@@ -79,6 +80,14 @@ MainWindow::MainWindow(Tracker& tracker, QWidget *parent)
     mainLayout->addLayout(shiftInputForm);
 
     mainLayout->addWidget(addShiftButton);
+
+    //calculate tip out button
+    QPushButton *calculateTipOutButton = new QPushButton("Calculate Tip-Out");
+    mainLayout->addWidget(calculateTipOutButton);
+
+    //run calculations when button pressed
+    connect(calculateTipOutButton, &QPushButton::clicked,
+        this, &MainWindow::calculateTipOutFromInputs);
 
     mainLayout->addWidget(resultLabel);
 
@@ -211,5 +220,43 @@ void MainWindow::updateShiftList()
         QString rowText = dateText + " | " + hoursText + "hrs | $" + earningsText;
         shiftList->addItem(rowText);
 
+    }
+}
+
+//read box if wrong input send error
+static double readTipOutNumber(QLineEdit *box, const char *errorMessage)
+{
+    bool readGood = false;
+    double number = box->text().toDouble(&readGood);
+
+    if (!readGood || !std::isfinite(number)) {
+        throw std::invalid_argument(errorMessage);
+    }
+
+    return number;
+}
+
+void MainWindow::calculateTipOutFromInputs()
+{
+    try {
+        double tip = readTipOutNumber(tipValueInput, "Enter a valid amount");
+        double amount;
+
+        if (tipTypeBox->currentText() == "Percent") {
+            double sales = readTipOutNumber(salesInput, "Enter sales amount.");
+            PercentTipOut tipOut(tip);
+            amount = tipOut.calculateTipOut(sales);
+        }
+
+        else {
+            //doesnt need sales
+            FixedTipOut tipOut(tip);
+            amount = tipOut.calculateTipOut(0);
+        }
+
+        //dollars formatting
+        resultLabel->setText("Tip Out: S" + QString::number(amount, 'f', 2));
+    } catch (const std::exception& error) {
+        resultLabel->setText(QString::fromUtf8(error.what()));
     }
 }

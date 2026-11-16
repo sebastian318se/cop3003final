@@ -55,6 +55,9 @@ private:
     //runs when add shift button clicked
     void addShiftFromInputs();
 
+    //runs when calculate tip out button clicked
+    void calculateTipOutFromInputs();
+
     //updates total
     void updateTotalEarnings();
 

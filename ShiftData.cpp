@@ -33,6 +33,7 @@ ShiftData::ShiftData(double shiftHours, double shiftWage,
     tips = shiftTips;
     sales = shiftSales;
     tipOutMethod = shiftTipOutMethod;
+    shiftDate = date;
 
 }
 
