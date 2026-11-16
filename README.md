@@ -1,4 +1,4 @@
-COP3003 Final Project – TipTally
+***COP3003 Final Project – TipTally***
 
 Requirements
 
@@ -10,7 +10,7 @@ Qt 6 Widgets
 
 rapidcsv library
 
-Installation
+**Installation**
 
 Install CMake and Qt 6 using Homebrew:
 
@@ -18,7 +18,7 @@ brew install cmake qt
 
 The project also uses rapidcsv for CSV handling. Make sure the rapidcsv header is included in the project.
 
-Building and Running
+**Building and Running**
 
 Open a terminal in the project directory.
 
