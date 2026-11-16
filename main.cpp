@@ -28,6 +28,15 @@ int main(int argc, char *argv[])
 
     window.show();
 
+    
+    int exitCode = app.exec();
 
-    return app.exec();
+    try {
+        tracker.saveInFile("shifts.txt");
+    }
+    catch (const std::execption& error) {
+        std::cout << "Saving Error: " << error.what() << "\n";
+    }
+
+    return exitCode;
 }
