@@ -110,7 +110,8 @@ void Tracker::saveInFile(const std::string &fileName) const
         << shift.getTips() << ","
         << shift.getSales() << ","
         << shift.getTipOutType() << ","
-        << shift.getTipOutValue() << std:: endl;
+        << shift.getTipOutValue() << ","
+        << shift.getShiftDate() << "\n";
     }
 }
 
@@ -137,6 +138,7 @@ void Tracker::loadFromFile(const std::string &fileName)
         std::string salesText;
         std::string tipType;
         std::string tipValueText;
+        std::string date;
 
         std::getline(lineStream, hoursText, ',');
         std::getline(lineStream, wageText, ',');
@@ -144,6 +146,10 @@ void Tracker::loadFromFile(const std::string &fileName)
         std::getline(lineStream, salesText, ',');
         std::getline(lineStream, tipType, ',');
         std::getline(lineStream, tipValueText, ',');
+        std::getline(lineStream, date);
+        if (!date.empty() && date.back() == '\r') {
+            date.pop_back();
+        }
 
         //stod means string to double
         //convert text values into numbers
@@ -172,7 +178,7 @@ void Tracker::loadFromFile(const std::string &fileName)
             throw std::runtime_error("Not valid tip out type");
         }
 
-        ShiftData loadedShift(hours, wage, tips, sales, tipOutType);
+        ShiftData loadedShift(hours, wage, tips, sales, tipOutType, date);
 
         addShift(loadedShift);
     }
@@ -180,9 +186,10 @@ void Tracker::loadFromFile(const std::string &fileName)
 }
 
 void Tracker::addShift(double hours, double hourlyWage, double tips,
-    double sales, std::shared_ptr<TipOut> tipOutType)
+    double sales, std::shared_ptr<TipOut> tipOutType,
+    const std::string& date)
 {
-    ShiftData newShift(hours, hourlyWage, tips, sales, tipOutType);
+    ShiftData newShift(hours, hourlyWage, tips, sales, tipOutType, date);
 
     addShift(newShift);
 }

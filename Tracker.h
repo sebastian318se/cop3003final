@@ -21,7 +21,8 @@ public:
     //overload of addShift
     // user can provide shift information
     void addShift(double hours, double hourlyWage,
-        double tips, double sales, std::shared_ptr<TipOut> tipOutMethod);
+        double tips, double sales, std::shared_ptr<TipOut> tipOutMethod,
+        const std::string& date = "");
 
     //saves shifts stored in the tracker
     void saveInFile(const std::string& fileName) const;

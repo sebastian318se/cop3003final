@@ -17,10 +17,13 @@ protected:
     // stores which method we figure out the tip out
     std::shared_ptr<TipOut> tipOutMethod;
 
+    std::string shiftDate;
+
 public:
     ShiftData(double hours, double hourlyWage,
               double tips, double sales,
-              std::shared_ptr<TipOut> tipOutMethod);
+              std::shared_ptr<TipOut> tipOutMethod,
+              const std::string& date = "");
 
     //getters
     double getHours() const;
@@ -29,6 +32,7 @@ public:
     double getSales() const;
     std::string getTipOutType() const;
     double getTipOutValue() const;
+    const std::string& getShiftDate() const;
 
     virtual ~ShiftData();
 

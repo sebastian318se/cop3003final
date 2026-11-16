@@ -7,7 +7,9 @@
 #include <QFormLayout>
 #include <QWidget>
 #include "PercentTipOut.h"
-#include<FixedTipOut.h>
+#include "FixedTipOut.h"
+
+#include <exception>
 
 //builds main TipTally window
 MainWindow::MainWindow(Tracker& tracker, QWidget *parent)
@@ -25,6 +27,11 @@ MainWindow::MainWindow(Tracker& tracker, QWidget *parent)
 
     //labels and inputs in rows (organizes inside container)
     QFormLayout *shiftInputForm = new QFormLayout();
+
+    //starts with current date and opens calendar
+    shiftDateInput = new QDateEdit(QDate::currentDate());
+    shiftDateInput->setCalendarPopup(true);
+    shiftInputForm->addRow("Shift Date", shiftDateInput);
 
     //user enters hours
     hoursInput = new QLineEdit();
@@ -75,6 +82,33 @@ MainWindow::MainWindow(Tracker& tracker, QWidget *parent)
 
     mainLayout->addWidget(resultLabel);
 
+    //creates a new label below the last results
+    totalEarningsLabel = new QLabel();
+    mainLayout->addWidget(totalEarningsLabel);
+    updateTotalEarnings();
+
+    //show every shift
+    allShiftsBox = new QCheckBox("Show every shift");
+    allShiftsBox->setChecked(true);
+
+    viewDateInput = new QDateEdit(QDate::currentDate());
+    viewDateInput->setCalendarPopup(true);
+
+    QFormLayout *historyForm = new QFormLayout();
+    historyForm->addRow(allShiftsBox);
+    historyForm->addRow("View Date", viewDateInput);
+
+    shiftList = new QListWidget();
+    mainLayout->addLayout(historyForm);
+    mainLayout->addWidget(shiftList);
+
+    //refresh if date is changed
+    connect(viewDateInput, &QDateEdit::dateChanged,
+        this, &MainWindow::updateShiftList);
+    connect(allShiftsBox, &QCheckBox::toggled,
+            this, &MainWindow::updateShiftList);
+    updateShiftList();
+
     //layout to widget
     mainWidget->setLayout(mainLayout);
 
@@ -87,32 +121,95 @@ MainWindow::MainWindow(Tracker& tracker, QWidget *parent)
 
 void MainWindow::addShiftFromInputs()
 {
-    double hours = hoursInput->text().toDouble();
-    double wage = wageInput->text().toDouble();
-    double tips = tipsInput->text().toDouble();
-    double sales = salesInput->text().toDouble();
-    double tipValue = tipValueInput->text().toDouble();
+    //Qt sets a flag when it reads each
+    bool hoursGood = false;
+    bool wageGood = false;
+    bool tipsGood = false;
+    bool salesGood = false;
+    bool tipValueGood = false;
 
-    std::shared_ptr<TipOut> tipOutType;
+    double hours = hoursInput->text().toDouble(&hoursGood);
+    double wage = wageInput->text().toDouble(&wageGood);
+    double tips = tipsInput->text().toDouble(&tipsGood);
+    double sales = salesInput->text().toDouble(&salesGood);
+    double tipValue = tipValueInput->text().toDouble(&tipValueGood);
 
-    if (tipTypeBox->currentText() == "Percent") {
-        tipOutType = std::make_shared<PercentTipOut>(tipValue);
+    //stop before adding a shift if inavlid
+    if (!hoursGood || !wageGood || !tipsGood || !salesGood || !tipValueGood) {
+        resultLabel->setText("Enter a valid number in every field.");
+        return;
     }
 
-    else {
-        tipOutType = std::make_shared<FixedTipOut>(tipValue);
+    try {
+        //tip out method selected
+        std::shared_ptr<TipOut> tipOutType;
+
+        if (tipTypeBox->currentText() == "Percent") {
+            tipOutType = std::make_shared<PercentTipOut>(tipValue);
+        }
+
+        else {
+            tipOutType = std::make_shared<FixedTipOut>(tipValue);
+        }
+
+        //records in year, month, date
+        std::string date = shiftDateInput->date(). toString(Qt::ISODate).toStdString();
+        tracker.addShift(hours, wage, tips, sales, tipOutType, date);
+        updateShiftList(); //update after shift is added
+
+        // get the shift added
+        const ShiftData& shift =
+            tracker.getShift(tracker.getShiftCount() - 1);
+
+        // show the result
+        resultLabel->setText(
+            "Earnings: $" +
+            QString::number(shift.calculateEarnings(), 'f', 2)
+        );
+    } catch (const std::exception& error) {
+        resultLabel->setText(QString::fromUtf8(error.what()));
+    }
+
+}
+
+void MainWindow::updateTotalEarnings()
+{
+    //Add up all shifts and show total to 2 decimals
+    double total = tracker.getTotalEarnings();
+    totalEarningsLabel->setText(
+        "Total Earnings: S" + QString::number(total, 'f', 2)
+        );
+}
+
+void MainWindow::updateShiftList()
+{
+    //remove visible rows
+    shiftList->clear();
+
+    //grabs date you picked formats it correctly
+    std::string selectedDate =
+            viewDateInput->date().toString(Qt::ISODate).toStdString();
+
+    //goes through shifts one by one
+    for (int index = 0; index < tracker.getShiftCount(); ++index) {
+        const ShiftData& shift = tracker.getShift(index);
+
+        //skip if the date is different than what we selected
+        if (!allShiftsBox->isChecked() && shift.getShiftDate() != selectedDate) {
+            continue;
+        }
+
+        QString dateText = shift.getShiftDate().empty()
+            ? QString("No date")
+            : QString::fromStdString(shift.getShiftDate());
+
+        //hours and earning formatted as text
+        QString hoursText = QString::number(shift.getHours());
+        QString earningsText = QString::number(shift.calculateEarnings(), 'f', 2);
+
+        //formatting
+        QString rowText = dateText + " | " + hoursText + "hrs | $" + earningsText;
+        shiftList->addItem(rowText);
 
     }
-    tracker.addShift(hours, wage, tips, sales, tipOutType);
-
-    // get the shift added
-    const ShiftData& shift =
-        tracker.getShift(tracker.getShiftCount() - 1);
-
-    // show the result
-    resultLabel->setText(
-        "Earnings: $" +
-        QString::number(shift.calculateEarnings(), 'f', 2)
-    );
-
 }

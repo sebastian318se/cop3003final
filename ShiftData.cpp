@@ -5,14 +5,27 @@
 
 ShiftData::ShiftData(double shiftHours, double shiftWage,
                      double shiftTips, double shiftSales,
-                     std::shared_ptr<TipOut> shiftTipOutMethod)
+                     std::shared_ptr<TipOut> shiftTipOutMethod,
+                     const std::string& date)
 {
     if (negative(shiftHours)) {
         throw std::invalid_argument("Shift hours cannot be negative");
     }
 
+    if (negative(shiftWage)) {
+        throw std::invalid_argument("Hourly wage cannot be negative");
+    }
+
     if (negative(shiftSales)) {
         throw std::invalid_argument("Sales cannot be negative");
+    }
+
+    if (negative(shiftTips)) {
+        throw std::invalid_argument("Tips cannot be negative");
+    }
+
+    if (!shiftTipOutMethod) {
+        throw std::invalid_argument("Choose a tip-out method");
     }
 
     hours = shiftHours;
@@ -20,6 +33,7 @@ ShiftData::ShiftData(double shiftHours, double shiftWage,
     tips = shiftTips;
     sales = shiftSales;
     tipOutMethod = shiftTipOutMethod;
+
 }
 
 ShiftData::~ShiftData()
@@ -82,6 +96,12 @@ double ShiftData::getTipOutValue() const
 std::string ShiftData::getShiftType() const
 {
     return "Regular Shift";
+}
+
+//return the date
+const std::string& ShiftData::getShiftDate() const
+{
+    return shiftDate;
 }
 
 // Allows Tracker to safely copy derived objects

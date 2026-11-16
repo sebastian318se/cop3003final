@@ -10,6 +10,9 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QLabel>
+#include <QCheckBox>
+#include <QDateEdit>
+#include <QListWidget>
 
 #include "Tracker.h"
 
@@ -39,8 +42,21 @@ private:
     //results displayed after a shift is added
     QLabel *resultLabel;
 
+    //total results displayed
+    QLabel *totalEarningsLabel;
+
+    QDateEdit *shiftDateInput;
+    QDateEdit *viewDateInput;
+    QCheckBox *allShiftsBox;
+    QListWidget *shiftList;
+
+    void updateShiftList();
+
     //runs when add shift button clicked
     void addShiftFromInputs();
+
+    //updates total
+    void updateTotalEarnings();
 
 public:
     //create main application
