@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     try {
         tracker.saveInFile("shifts.txt");
     }
-    catch (const std::execption& error) {
+    catch (const std::exception& error) {
         std::cout << "Saving Error: " << error.what() << "\n";
     }
 
