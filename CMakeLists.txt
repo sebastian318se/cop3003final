@@ -5,6 +5,7 @@ project(cop3003final)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_PREFIX_PATH "/opt/homebrew/opt/qt")
+set(CMAKE_AUTOMOC ON)
 
 # Find the Qt Widgets library for the GUI.
 find_package(Qt6 REQUIRED COMPONENTS Widgets)

@@ -1,9 +1,6 @@
-//
-// Created by Destiny Acuna on 11/12/26.
-//
 
-#ifndef COP3003FINAL_MAINWINDOW_H
-#define COP3003FINAL_MAINWINDOW_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <QMainWindow>
 #include <QComboBox>
@@ -16,55 +13,47 @@
 
 #include "Tracker.h"
 
-//main GUI window for TipTally
 class MainWindow : public QMainWindow
 {
-private:
+    Q_OBJECT
 
-    //reference to tracker
+public:
+    MainWindow(Tracker& tracker, QWidget *parent = nullptr);
+
+private:
     Tracker& tracker;
 
-    //inputs
     QLineEdit *hoursInput;
     QLineEdit *wageInput;
     QLineEdit *tipsInput;
     QLineEdit *salesInput;
-
-    //percent or fixed tips dropdown menu
-    QComboBox * tipTypeBox;
-
-    // input for % or fixed
     QLineEdit *tipValueInput;
 
-    //button to add shift
+    QComboBox *tipTypeBox;
+
     QPushButton *addShiftButton;
+    QPushButton *editShiftButton;
+    QPushButton *deleteShiftButton;
 
-    //results displayed after a shift is added
     QLabel *resultLabel;
-
-    //total results displayed
     QLabel *totalEarningsLabel;
 
     QDateEdit *shiftDateInput;
     QDateEdit *viewDateInput;
+
     QCheckBox *allShiftsBox;
     QListWidget *shiftList;
 
+    int editingShiftIndex = -1;
+
     void updateShiftList();
-
-    //runs when add shift button clicked
-    void addShiftFromInputs();
-
-    //runs when calculate tip out button clicked
-    void calculateTipOutFromInputs();
-
-    //updates total
     void updateTotalEarnings();
 
-public:
-    //create main application
-    MainWindow(Tracker& tracker, QWidget *parent = nullptr);
+    void addShiftFromInputs();
+    void calculateTipOutFromInputs();
+
+    void editSelectedShift();
+    void deleteSelectedShift();
 };
 
-
-#endif //COP3003FINAL_MAINWINDOW_H
+#endif // MAINWINDOW_H
