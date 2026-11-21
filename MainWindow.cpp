@@ -72,6 +72,31 @@ MainWindow::MainWindow(Tracker& tracker, QWidget *parent)
     mainLayout->addWidget(viewDateInput);
     mainLayout->addWidget(shiftList);
 
+    QLabel* tipOutLabel = new QLabel("Select a shift to see its tip-out.");
+    mainLayout->addWidget(tipOutLabel);
+
+    connect(shiftList, &QListWidget::currentItemChanged, this,
+            [this, tipOutLabel](QListWidgetItem* row) {
+        if (!row) {
+            tipOutLabel->clear();
+            return;
+        }
+
+        // Read saved shift using index
+        int index = row->data(Qt::UserRole).toInt();
+        const ShiftData& shift = this->tracker.getShift(index);
+        QString value = QString::number(shift.getTipOutValue(), 'f', 2);
+
+        //formatting for % vs fixed
+        if (shift.getTipOutType() == "Percent") {
+            value += "%";
+        } else {
+            value = "$" + value;
+        }
+
+        tipOutLabel->setText("Saved tip-out: " + value);
+    });
+
     editShiftButton = new QPushButton("Edit Shift");
     deleteShiftButton = new QPushButton("Delete Shift");
 
