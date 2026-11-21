@@ -1,6 +1,8 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <filesystem>
+#include <QMessageBox>
 #include <QApplication>
 
 #include "ShiftData.h"
@@ -16,13 +18,26 @@ int main(int argc, char *argv[])
     //main tracker
     Tracker tracker;
 
+    bool canSave = false;
+
     try {
-        tracker.loadFromFile("shifts.txt");
+        // no file might be there
+        if (std::filesystem::exists("shifts.txt")) {
+            tracker.loadFromFile("shifts.txt");
+        }
+
+        canSave = true;
     }
-    //catch exception call it error tell me why
-    catch (const std::exception&error) {
-        std:: cout << "Loading error: " << error.what() << "\n";
+    catch (const std::exception& error) {
+        QMessageBox::warning(
+            nullptr,
+            "Could not load shifts",
+            QString("Original file saved. "
+                    "Changes made will not be saved.\n\n%1")
+                .arg(QString::fromUtf8(error.what()))
+        );
     }
+
 
     MainWindow window(tracker);
 
@@ -30,6 +45,10 @@ int main(int argc, char *argv[])
 
     
     int exitCode = app.exec();
+
+    if (!canSave) {
+        return exitCode;
+    };
 
     try {
         tracker.saveInFile("shifts.txt");

@@ -124,11 +124,18 @@ void Tracker::loadFromFile(const std::string &fileName)
         throw std::runtime_error("Could not load file");
     }
 
-    //temporarily hold one line from the file
+    //temporarily hold shifts until entire file read
+    Tracker loadedTracker;
     std::string line;
 
     //read one full line until none left
     while (std::getline(loadFile, line)) {
+
+        //skip empty lines and spaces
+
+        if (line.find_first_not_of(" \t\r") == std::string::npos) {
+            continue;
+        }
         std::stringstream lineStream(line);
 
         //temporarily hold values to read
@@ -179,8 +186,14 @@ void Tracker::loadFromFile(const std::string &fileName)
         }
 
         ShiftData loadedShift(hours, wage, tips, sales, tipOutType, date);
+        loadedTracker.addShift(loadedShift);
 
-        addShift(loadedShift);
+        if (!loadFile.bad()) {
+            throw::std::runtime_error("Failed reading shift file!");
+        }
+
+        //swap current shifts after successful file load
+        shifts.swap(loadedTracker.shifts);
     }
 
 }
