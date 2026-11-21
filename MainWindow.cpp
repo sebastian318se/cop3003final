@@ -127,7 +127,16 @@ void MainWindow::addShiftFromInputs()
     std::shared_ptr<TipOut> tipOutType;
 
     try {
-        double tipValue = tipValueInput->text().toDouble();
+
+        //Qt sets to false if you enter something thats not a number
+        bool tipGood = false;
+        double tipValue = tipValueInput->text().toDouble(&tipGood);
+
+        //stops before adding an incorrect tip out
+        if (!tipGood || !std::isfinite(tipValue) || tipValue < 0) {
+            resultLabel->setText ("Enter a valid tip out");
+            return;
+        }
 
         if (tipTypeBox->currentText() == "Percent") {
             tipOutType = std::make_shared<PercentTipOut>(tipValue);
