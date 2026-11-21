@@ -97,7 +97,6 @@ MainWindow::MainWindow(Tracker& tracker, QWidget *parent)
             this, &MainWindow::deleteSelectedShift);
 
     updateShiftList();
-    updateTotalEarnings();
 
     setCentralWidget(mainWidget);
 }
@@ -165,7 +164,6 @@ void MainWindow::addShiftFromInputs()
         }
 
         updateShiftList();
-        updateTotalEarnings();
 
     }
     catch (const std::exception& e) {
@@ -220,11 +218,31 @@ void MainWindow::calculateTipOutFromInputs()
 // Updates the total earnings display
 void MainWindow::updateTotalEarnings()
 {
-    double total = tracker.getTotalEarnings();
+    double total = 0;
+    QString label = "Total Earnings: $";
 
-    totalEarningsLabel->setText(
-        "Total Earnings: $" + QString::number(total, 'f', 2)
-    );
+    //show earnings from all shifts
+    if (allShiftsBox->isChecked()) {
+        total = tracker.getTotalEarnings();
+    }
+    else {
+        //add only selected shifts
+        std::string selectedDate =
+            viewDateInput->date().toString(Qt::ISODate).toStdString();
+
+        // for loop that adds up earnings for date you picked
+        for (int i = 0; i < tracker.getShiftCount(); i++) {
+            const ShiftData& shift = tracker.getShift(i);
+
+            if (shift.getShiftDate() == selectedDate) {
+                total += shift.calculateEarnings();
+            }
+
+            label = "Earnings for Date Selected: $";
+        }
+    }
+
+    totalEarningsLabel->setText(label + QString::number(total, 'f', 2));
 }
 
 // Updates the shift history list
@@ -254,6 +272,8 @@ void MainWindow::updateShiftList()
 
         shiftList->addItem(item);
     }
+
+    updateTotalEarnings();
 }
 
 // Loads a selected shift into the input fields
@@ -319,7 +339,6 @@ void MainWindow::deleteSelectedShift()
     addShiftButton->setText("Add Shift");
 
     updateShiftList();
-    updateTotalEarnings();
 
     resultLabel->setText("Shift deleted.");
 }

@@ -188,7 +188,7 @@ void Tracker::loadFromFile(const std::string &fileName)
         ShiftData loadedShift(hours, wage, tips, sales, tipOutType, date);
         loadedTracker.addShift(loadedShift);
 
-        if (!loadFile.bad()) {
+        if (loadFile.bad()) {
             throw::std::runtime_error("Failed reading shift file!");
         }
 
